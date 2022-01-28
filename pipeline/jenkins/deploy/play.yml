@@ -1,0 +1,14 @@
+---
+- name: Let's copy our executable script to remote location, execute script and get result back.
+  remote_user: root
+  become: true
+  hosts: test1
+  tasks:
+    - name: remove old webapps warfile
+      shell: rm -rf /opt/tomcat/webapps/index* 2> /dev/null || true
+ 
+    - name: add new webapps warfile
+      shell: mv /tmp/new_image.war /opt/tomcat/webapps/index.war
+    
+    # - name: reload webapp
+    #   command: touch /opt/tomcat/webapps

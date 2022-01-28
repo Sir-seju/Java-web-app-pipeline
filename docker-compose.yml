@@ -1,0 +1,37 @@
+---
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins-docker
+    build:
+      context: pipeline
+    ports:
+      - "8080:8080"
+    networks:
+      - jenkins
+    volumes:
+      - "~/Desktop/devops/jenkins/jenkins-data:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"   
+  git:
+    container_name: git-server
+    image: 'gitlab/gitlab-ce:latest'
+    hostname: 'gitlab.example.com'
+    ports:
+      - '3030:80'
+    volumes:
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
+    networks:
+      - jenkins
+  tomcat:
+    container_name: tomcat
+    image: apache:tomcat
+    build:
+      context: pipeline/tomcat
+    ports:
+      - "80:8080"
+    networks:
+      - jenkins
+networks:
+  jenkins:
